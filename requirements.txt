@@ -1,0 +1,11 @@
+telethon
+python-dotenv
+PySocks
+cryptg
+aiohttp
+psycopg2-binary
+telethon-session-sqlalchemy
+sqlalchemy
+aiopg
+emoji
+pillow
