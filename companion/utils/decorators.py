@@ -97,7 +97,7 @@ def admins_only(f):
         if not event.is_private:
             chat = await event.get_chat()
             if not chat.creator or chat.admin_rights:
-                await event.edit("This command was made for chat admins only!")
+                await event.reply("This command was made for chat admins only!")
                 return
             else:
                 chat_creator = chat.creator
