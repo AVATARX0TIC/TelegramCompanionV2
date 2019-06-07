@@ -78,7 +78,7 @@ async def afk(event):
         elif minutes > 0:
             afk_since = "`{}m{}s` **ago**".format(int(minutes), int(seconds))
         else:
-            afk_since = "`{}` **ago**".format(int(seconds))
+            afk_since = "`{}s` **ago**".format(int(seconds))
     else:
         afk_since = "`a while ago!`"
 
