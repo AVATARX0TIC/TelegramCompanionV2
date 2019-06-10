@@ -1,11 +1,14 @@
 import re
 
 from telethon import events
-from telethon.tl.types import InputPeerChannel, InputPeerChat
 
 from functools import wraps
+from inspect import iscoroutinefunction
 
-from companion import CMD_HELP, CMD_PREFIX, client
+from companion import CMD_HELP, client
+from companion.env_vars import DB_URI, CMD_PREFIX
+
+
 
 
 def _generate_help(f, command):
@@ -44,13 +47,17 @@ def commandhandler(
     """
     def decorator(f):
         _prefix = re.escape(prefix) if prefix else ""
-        _pattern = _prefix + command if command else None
+        if not command:
+            _pattern = command
+        else:
+         _pattern = _prefix + command
         _generate_help(f, command)
 
         @client.on(
             events.NewMessage(
                 pattern=_pattern,
                 incoming=incoming,
+                outgoing=not incoming,
                 func=func,
                 **kwargs))
         async def wrapper(event):
@@ -85,7 +92,7 @@ def commandhandler(
             event.args = _args
 
             client.parse_mode = parse_mode
-            _call_func = await f(event)
+            _call_func = await f(event) if iscoroutinefunction(f) else f(event)
             client.parse_mode = None
 
         return wrapper
@@ -105,3 +112,17 @@ def admins_only(f):
 
         return await f(event, chat_creator, chat_admin_rights)
     return wrapper
+
+
+def sql_only(reply=True):
+    def _sql_only(f):
+        @wraps(f)
+        async def wrapper(event=None, *args, **kwargs):
+            if not DB_URI:
+                if reply is True:
+                    await event.reply("Running on Non-SQL Mode!")
+                return
+            else:
+                return await f(event, *args, **kwargs)
+        return wrapper
+    return _sql_only

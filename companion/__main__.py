@@ -1,6 +1,7 @@
 import importlib
 import aiohttp
 import time
+import asyncio
 
 from companion import CMD_HELP, MAX_TEXT_LEN, client, __version__
 from companion.modules import get_modules
@@ -69,6 +70,7 @@ async def help(event):
 
     if OUTPUT:
         await event.reply("Here are all the commands you can use: \n\n{}".format(OUTPUT))
+
 
 
 if __name__ == "__main__":
