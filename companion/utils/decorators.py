@@ -72,6 +72,7 @@ def commandhandler(
 
             if args:
                 if isinstance(args, list):
+                    _args = CommandArguments()
                     nr_args = 0
                     len_args = len(args)
 
@@ -81,13 +82,12 @@ def commandhandler(
                     for arg in args:
                         try:
                             setattr(
-                                CommandArguments,
+                                _args,
                                 args[nr_args],
                                 split_text[nr_args])
                         except IndexError:
-                            setattr(CommandArguments, args[nr_args], None)
+                            setattr(_args, args[nr_args], None)
                         nr_args += 1
-                    _args = CommandArguments
 
             event.args = _args
 
