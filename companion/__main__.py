@@ -5,10 +5,14 @@ import asyncio
 
 from companion import CMD_HELP, MAX_TEXT_LEN, client, __version__
 from companion.modules import get_modules
+from companion.plugins import get_plugins
 from companion.utils import CommandHandler
 
 for module in get_modules():
     importlib.import_module("companion.modules." + module)
+
+for plugin in get_plugins():
+    importlib.import_module("companion.plugins." + plugin)
 
 
 @CommandHandler("start", parse_mode="html")

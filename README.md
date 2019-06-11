@@ -55,12 +55,13 @@ Every command follows tgbot's syntax but instead of `/<command>` we use `.<comma
 
 ## Plugins
 
-
-Plugins allow users to create their own plugins in a official [repo](https://github.com/nitanmarcel/TgCompanionPlugins) or on their own repo, so the user can install them using `python3 -m tg_companion.pluginmanager --install` `<pluginname>` or `python3 -m tg_companion.pluginmanager` `<githubusername>` `<reponame>` `pluginname`.
+Plugins allow users to create their own plugins in a official [repo](https://github.com/nitanmarcel/TgCompanionPlugins) or on their own repo, so the user can install them using `python3 -m tg_companion.pluginmanager --install` `<pluginname>` or `python3 -m tg_companion.pluginmanager` `<githubusername>` `<reponame>` `pluginname` if using a unofficial repo!
 
 To uninstall a plugin run `python3 -m tg_companion.pluginmanager --remove` `<pluginname>`
 
-The [TgCompanionPlugins](https://github.com/nitanmarcel/TgCompanionPlugins) repo uses the old code layout and won't work with this version. You can always make a PR to help me update the plugins or use another repo that has support for this version!
+Check [TgCompanionPlugins](https://github.com/nitanmarcel/TgCompanionPlugins) repo for more informations.
+
+**On heroku you need to clone the userbot on your PC, install the plugins and manually add the requirements to the requirements.txt file. Then finally push the userbot on heroku!**
 
 ## Support
 

@@ -10,7 +10,7 @@ import shutil
 
 import aiohttp
 
-from companion.plugins import load_plugins
+from companion.plugins import get_plugins
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -60,13 +60,13 @@ async def download_plugins(user="nitanmarcel", repo="TgCompanionPlugins", plugin
             text = await plugfile.text(encoding="utf8")
 
             LOGGER.info("Writing plugin file")
-            if not os.path.isdir(f"tg_companion/plugins/{plugin}"):
-                os.makedirs(f"tg_companion/plugins/{plugin}")
+            if not os.path.isdir(f"companion/plugins/{plugin}"):
+                os.makedirs(f"companion/plugins/{plugin}")
 
-            with open(f"tg_companion/plugins/{plugin}/{plugin}.plugin", "w+") as file:
+            with open(f"companion/plugins/{plugin}/{plugin}.plugin", "w+") as file:
                 file.write(text)
         config.read(
-            f"tg_companion/plugins/{plugin}/{plugin}.plugin")
+            f"companion/plugins/{plugin}/{plugin}.plugin")
 
         modules_to_load = config.get("CORE", "modules").split(",")
         requirements = config.get("CORE", "requirements").split(",")
@@ -88,14 +88,14 @@ async def download_plugins(user="nitanmarcel", repo="TgCompanionPlugins", plugin
 
                 text = await pyfile.text(encoding="utf8")
                 LOGGER.info("Writing python module")
-                with open(f"tg_companion/plugins/{plugin}/{module.strip()}.py", "w+") as file:
+                with open(f"companion/plugins/{plugin}/{module.strip()}.py", "w+") as file:
                     file.write(text)
         LOGGER.info(f"Installed {plugin}")
         LOGGER.info(f"Plugin {plugin} Installed")
 
 
 def remove_plugin(plugin_name):
-    path = f"tg_companion/plugins/{plugin_name}"
+    path = f"companion/plugins/{plugin_name}"
     if os.path.isdir(path):
         shutil.rmtree(path, ignore_errors=True)
         LOGGER.info(f"Plugin {plugin_name} removed")
@@ -104,17 +104,17 @@ def remove_plugin(plugin_name):
 
 
 def list_plugins():
-    PLUGINS = sorted(load_plugins())
+    PLUGINS = sorted(get_plugins())
     OUTPUT = ""
     for plugin in PLUGINS:
-        installed = plugin.split("/")[-1]
+        installed = plugin.split(".")[0]
         OUTPUT += f"\n{installed}"
     return OUTPUT
 
 
 def load_plugin_info(pluginname):
 
-    PLUGINS = sorted(load_plugins())
+    PLUGINS = sorted(get_plugins())
     plugin_dct = {}
     for plugin in PLUGINS:
         if plugin.split(

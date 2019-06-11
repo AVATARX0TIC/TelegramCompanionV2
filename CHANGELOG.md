@@ -1,3 +1,8 @@
+2.0.2:
+
+    - Don't let CommandHandler args propagate to different events (by @YouTwitFace)
+    - Add back the plugin manager functionality. Also all the plugins on https://github.com/nitanmarcel/TgCompanionPlugins have been updated to work on the new version!
+
 2.0.1:
     
     - Add back anti-spam feature for private messages
