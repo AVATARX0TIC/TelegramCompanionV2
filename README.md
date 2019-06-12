@@ -61,7 +61,10 @@ To uninstall a plugin run `python3 -m tg_companion.pluginmanager --remove` `<plu
 
 Check [TgCompanionPlugins](https://github.com/nitanmarcel/TgCompanionPlugins) repo for more informations.
 
-**On heroku you need to clone the userbot on your PC, install the plugins and manually add the requirements to the requirements.txt file. Then finally push the userbot on heroku!**
+
+**Install plugins on heroku:**
+
+If you are using heroku like servers you can install any plugins by creating a `plugins.txt` file and add the plugins you want to install there. (Just like you do with the pip requirements!)
 
 ## Support
 

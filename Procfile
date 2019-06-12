@@ -1,1 +1,1 @@
-worker: python3 -m companion
+worker: python3 heroku.py
