@@ -12,14 +12,14 @@ async def install_plugins():
             for line in file.readlines():
                 to_match = re.match(
                         r"([^\/]+)\/([^\/]+)(\/([^\/]+)(\/(.*))?)?",
-                        line)
+                        line.strip())
                 if to_match:
                     await download_plugins(
                                     user=to_match.group(1),
                                     repo=to_match.group(2),
                                     plugin=to_match.group(4))
                 else:
-                    await download_plugins(plugin=line)
+                    await download_plugins(plugin=line.strip())
 
 async def init():
     await install_plugins()
