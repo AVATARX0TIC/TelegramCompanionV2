@@ -110,7 +110,7 @@ def admins_only(f):
                 chat_creator = chat.creator
                 chat_admin_rights = chat.admin_rights
 
-        return await f(event, chat_creator, chat_admin_rights)
+        return await f(event, chat, chat_creator, chat_admin_rights)
     return wrapper
 
 
