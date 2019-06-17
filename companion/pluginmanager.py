@@ -68,7 +68,10 @@ async def download_plugins(user="nitanmarcel", repo="TgCompanionPlugins", plugin
             f"companion/plugins/{plugin}/{plugin}.plugin")
 
         modules_to_load = config.get("CORE", "modules").split(",")
-        requirements = config.get("CORE", "requirements").split(",")
+        try:
+            requirements = config.get("CORE", "requirements").split(",")
+        except:
+            requirements = None
         if requirements:
             for module in requirements:
                 if not importlib.util.find_spec(module.replace(" ", "")):
