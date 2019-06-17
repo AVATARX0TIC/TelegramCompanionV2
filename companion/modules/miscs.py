@@ -1,5 +1,6 @@
 from companion.utils import CommandHandler
 from telethon.tl.functions.users import GetFullUserRequest
+from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors import UserIdInvalidError
 from html import escape
 
@@ -60,3 +61,17 @@ async def user_info(event):
 
         await event.client.send_message(event.input_chat, INFO, reply_to=message.id, file=profile_photo)
         await event.delete()
+
+
+@CommandHandler(command="admins", parse_mode="html")
+async def chat_admins(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>Get all the admins from a chat!</i>
+    """
+    admins = "<b>Admins in this chat:</b>\n"
+    async for admin in event.client.iter_participants(await event.get_input_chat(), filter=ChannelParticipantsAdmins):
+        if not admin.deleted:
+            admins += "\n<a href=\"tg://user?id={}\">{}</a> - {}".format(admin.id, admin.username or admin.first_name, "🤖" if admin.bot else "👤")
+
+    await event.edit(admins)
