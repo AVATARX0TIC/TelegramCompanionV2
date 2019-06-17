@@ -135,12 +135,12 @@ async def kick(event, chat, chat_creator, chat_admin):
 @admins_only
 async def pin(event, chat, chat_creator, chat_admin):
     """
-    <b>param:</b> <code>None</code>
+    <b>param:</b> <code>loud</code> - <i>Set to anything to notify all members</i>
     <b>return:</b> <i>Pins a message in the chat!</i>
     """
     if event.is_reply:
         if chat_creator or chat_admin.can_pin:
-            await event.client(UpdatePinnedMessageRequest(chat, event.reply_to_msg_id, silent=bool(event.args.loud)))
+            await (await event.get_reply_message()).pin()
         else:
             await event.reply("You don't have the rights to pin messages here!")
     else:
