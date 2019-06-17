@@ -4,7 +4,6 @@ from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import (ChannelParticipantBanned, ChatBannedRights, ChannelParticipantSelf, ChannelParticipantAdmin, ChannelParticipantCreator, User)
 from telethon.tl.functions.channels import GetParticipantRequest
 from telethon.errors import UserNotParticipantError
-from telethon.tl.functions.messages import UpdatePinnedMessageRequest
 import datetime
 
 
