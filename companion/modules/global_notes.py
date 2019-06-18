@@ -10,7 +10,7 @@ from companion.utils import CommandHandler
     args=[
         "notename",
         "content"],
-    parse_mode="html")
+    parse_mode="md")
 async def save(event):
     """
     <b>param:</b> <code>notename, content</code> - <i>The content argument is required only if you don't reply to a message.</i>
@@ -56,7 +56,7 @@ async def save(event):
             access_hash,
             file_id,
             file_reference)
-        await event.reply("Note <code>{}</code> saved! get it with <code>get {}</code>".format(event.args.notename, event.args.notename))
+        await event.reply("Note <code>{}</code> saved! get it with `get {}`".format(event.args.notename, event.args.notename))
     else:
         await event.edit("There's no note name given!")
 
