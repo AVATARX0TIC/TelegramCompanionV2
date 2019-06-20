@@ -2,7 +2,7 @@ from telethon.tl.types import (InputDocument, InputPhoto,
                                MessageMediaPhoto, MessageMediaWebPage)
 
 from companion.modules.sql import global_notes_sql as sql
-from companion.utils import CommandHandler
+from companion.utils import CommandHandler, sql_only
 
 
 @CommandHandler(
@@ -11,6 +11,7 @@ from companion.utils import CommandHandler
         "notename",
         "content"],
     parse_mode="md")
+@sql_only(reply=True)
 async def save(event):
     """
     <b>param:</b> <code>notename, content</code> - <i>The content argument is required only if you don't reply to a message.</i>
@@ -62,6 +63,7 @@ async def save(event):
 
 
 @CommandHandler(command="get", args=["notename"], parse_mode="md")
+@sql_only(reply=True)
 async def get(event):
     """
     <b>param:</b> <code>notename</code>
@@ -92,6 +94,7 @@ async def get(event):
 
 
 @CommandHandler(command="rmnote", args=["notename"], parse_mode="html")
+@sql_only(reply=True)
 async def rmnote(event):
     """
     <b>param:</b> <code>notename</code>
@@ -108,6 +111,7 @@ async def rmnote(event):
 
 
 @CommandHandler(command="getnotes", parse_mode="html")
+@sql_only(reply=True)
 async def getnotes(event):
     """
     <b>param:</b> <code>None</code>
