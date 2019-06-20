@@ -11,7 +11,7 @@ WARNS = {}
 
 
 @client.on(events.NewMessage(outgoing=True, incoming=False))
-@sql_only()
+@sql_only(reply=False)
 async def approve_pm(event):
     if event.is_private and ANTI_SPAM:
         input_chat = await event.get_input_chat()
@@ -46,7 +46,7 @@ async def await_approve(event):
 
 
 @CommandHandler(command="setpm", args=["message"])
-@sql_only
+@sql_only(reply=True)
 async def set_custom_msg(event):
     """
     <b>param:</b> <code>message</code>
@@ -60,7 +60,7 @@ async def set_custom_msg(event):
 
 
 @CommandHandler(command="clearpm")
-@sql_only
+@sql_only(reply=True)
 async def set_custom_msg(event):
     """
     <b>param:</b> <code>None</code>
