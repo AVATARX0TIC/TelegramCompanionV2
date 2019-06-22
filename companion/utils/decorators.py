@@ -103,7 +103,7 @@ def admins_only(f):
     async def wrapper(event):
         if not event.is_private:
             chat = await event.get_chat()
-            if not chat.creator or chat.admin_rights:
+            if not chat.creator or not chat.admin_rights:
                 await event.reply("This command was made for chat admins only!")
                 return
             else:
