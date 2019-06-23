@@ -138,7 +138,7 @@ async def pin(event, chat, chat_creator, chat_admin):
     <b>return:</b> <i>Pins a message in the chat!</i>
     """
     if event.is_reply:
-        if chat_creator or chat_admin.can_pin:
+        if chat_creator or chat_admin.pin_messages:
             await (await event.get_reply_message()).pin()
         else:
             await event.reply("You don't have the rights to pin messages here!")
