@@ -1,4 +1,5 @@
-from companion.utils import CommandHandler, admins_only
+from companion.utils import CommandHandler
+from companion.utils.decorators.chat_status import admins_only
 
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import (ChannelParticipantBanned, ChatBannedRights, ChannelParticipantSelf, ChannelParticipantAdmin, ChannelParticipantCreator, User)

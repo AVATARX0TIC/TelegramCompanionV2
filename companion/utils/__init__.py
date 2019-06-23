@@ -1,4 +1,5 @@
-from .decorators import commandhandler, admins_only, sql_only
-from .helpers import has_image, resize_image
+from companion.utils.decorators import commandhandler
+from companion.utils.decorators.sql import sql_only
+from companion.utils.decorators.chat_status import admins_only
 
-CommandHandler = commandhandler
+CommandHandler = commandhandler.commandhandler

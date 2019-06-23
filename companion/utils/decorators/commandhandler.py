@@ -2,25 +2,9 @@ import re
 
 from telethon import events
 
-from functools import wraps
+from companion.env_vars import CMD_PREFIX
 from inspect import iscoroutinefunction
-
 from companion import CMD_HELP, client
-from companion.env_vars import DB_URI, CMD_PREFIX
-
-
-
-
-def _generate_help(f, command):
-    global CMD_HELP
-    if f.__doc__:
-        CMD_HELP.update({command: f.__doc__})
-
-
-class CommandArguments:
-    def __init__(self, *args, **kwargs):
-        pass
-
 
 def commandhandler(
         command=None,
@@ -50,7 +34,7 @@ def commandhandler(
         if not command:
             _pattern = command
         else:
-         _pattern = r"{}\b".format(_prefix + command)
+            _pattern = r"{}\b".format(_prefix + command)
         _generate_help(f, command)
 
         @client.on(
@@ -98,29 +82,11 @@ def commandhandler(
         return wrapper
     return decorator
 
-def admins_only(f):
-    @wraps(f)
-    async def wrapper(event):
-        if not event.is_private:
-            chat = await event.get_chat()
-            if chat.creator or chat.admin_rights:
-                chat_creator = chat.creator
-                chat_admin_rights = chat.admin_rights
-                return await f(event, chat, chat_creator, chat_admin_rights)
-            else:
-                await event.reply("This command was made for chat admins only!")
-    return wrapper
+class CommandArguments:
+    def __init__(self, *args, **kwargs):
+        pass
 
-
-def sql_only(reply=True):
-    def _sql_only(f):
-        @wraps(f)
-        async def wrapper(event=None, *args, **kwargs):
-            if not DB_URI:
-                if reply is True:
-                    await event.reply("Running on Non-SQL Mode!")
-                return
-            else:
-                return await f(event, *args, **kwargs)
-        return wrapper
-    return _sql_only
+def _generate_help(f, command):
+    global CMD_HELP
+    if f.__doc__:
+        CMD_HELP.update({command: f.__doc__})

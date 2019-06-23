@@ -8,7 +8,9 @@ from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputPeerNotifySettings, InputStickerSetShortName, InputMediaUploadedDocument, DocumentAttributeFilename
 from telethon import utils
 
-from companion.utils import CommandHandler, has_image, resize_image
+from companion.utils import CommandHandler
+from companion.utils.helpers.tools import resize_image
+from companion.utils.helpers.messages import has_image
 
 
 @CommandHandler(command="kang", args=["emoji"])
