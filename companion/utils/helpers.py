@@ -1,7 +1,7 @@
 from telethon import utils
 import math
 from PIL import Image
-from telethon.tl.types import Document, Photo
+from telethon.tl.types import Document, Photo, MessageEntityUrl, MessageEntityTextUrl
 
 def has_image(entity):
     if isinstance(entity, Photo):
@@ -35,3 +35,38 @@ def resize_image(image, size, save_location):
     else:
         image.thumbnail(size)
     image.save(save_location, "PNG")
+
+
+def get_message_type(message):
+    if message.forward:
+        return "forward"
+    elif message.audio:
+        return "audio"
+    elif message.voice:
+        return "voice"
+    elif message.video:
+        return "video"
+    elif message.video_note:
+        return "video_note"
+    elif message.photo:
+        return "photo"
+    elif message.gif:
+        return "gif"
+    elif message.sicker:
+        return "sticker"
+    elif message.document:
+        return "document"
+    elif message.poll:
+        return "poll"
+    elif message.geo:
+        return "geo"
+    elif message.game:
+        return "game"
+    elif message.contact:
+        return "contact"
+    elif message.entities:
+        for entity in message.entities:
+            if isinstance(entity, (MessageEntityTextUrl, MessageEntityUrl)):
+                return "url"
+    else:
+        return "text"
