@@ -131,7 +131,7 @@ async def kick(event, chat, chat_creator, chat_admin):
     else:
         await event.reply("You don't have the rights to restrict users here!")
 
-@CommandHandler(command="pin", args=["loud"], private_lock=True, parse_mode='html')
+@CommandHandler(command="pin", args=["loud"], parse_mode='html')
 @admins_only
 async def pin(event, chat, chat_creator, chat_admin):
     """
