@@ -40,7 +40,7 @@ async def unlock(event):
         await event.edit("What are you trying to unlock?")
 
 
-@client.on(events.NewMessage(incoming=True, func=lambda e: e.is_private and not e.is_bot))
+@client.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 @sql_only(reply=False)
 async def delete_lock(event):
     """
