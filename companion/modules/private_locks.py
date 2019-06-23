@@ -56,7 +56,7 @@ async def delete_lock(event):
             await event.delete()
 
 
-@CommandHandler(command="alllocks", parse_mode="html")
+@CommandHandler(command="locks", parse_mode="html")
 async def locktypes(event):
     """
     <b>param:</b> <code>None</code>

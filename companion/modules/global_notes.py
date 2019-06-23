@@ -110,7 +110,7 @@ async def rmnote(event):
         await event.edit("You have to give me a note name to remove!")
 
 
-@CommandHandler(command="getnotes", parse_mode="html")
+@CommandHandler(command="notes", parse_mode="html")
 @sql_only(reply=True)
 async def getnotes(event):
     """
