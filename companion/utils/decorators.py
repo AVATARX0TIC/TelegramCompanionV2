@@ -50,7 +50,7 @@ def commandhandler(
         if not command:
             _pattern = command
         else:
-         _pattern = _prefix + command
+         _pattern = r"{}\b".format(_prefix + command)
         _generate_help(f, command)
 
         @client.on(
