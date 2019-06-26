@@ -1,3 +1,10 @@
+2.1.2:
+    - Add heroku support for the plugin manager. Read https://github.com/nitanmarcel/TelegramCompanionV2#plugins
+    - Add `admin` command to get a chat's admins!
+    - Add back the global notes module
+    - Add private lockables
+    - Other bug fixes!
+
 2.0.2:
 
     - Don't let CommandHandler args propagate to different events (by @YouTwitFace)
