@@ -2,7 +2,7 @@ import re
 from inspect import iscoroutinefunction
 
 from telethon import events
-
+from companion import client
 from companion.env_vars import CMD_PREFIX
 
 
@@ -78,12 +78,14 @@ def commandhandler(
             if event.text:
                 if not event.text.startswith(
                         "/") and re.match(r"^\W\w+(?:\S.*)", event.text):
-                    cmd_ent = [MessageEntityUserBotCommand(event.text)]
+                    cmd_ent = MessageEntityUserBotCommand(event.text)
                     if hasattr(event, "message"):
                         if event.message.entities:
+
                             event.message.entities.append(cmd_ent)
                         else:
-                            event.message.entities = cmd_ent
+                            event.message.entities = []
+                            event.message.entities.append(cmd_ent)
 
             client.parse_mode = parse_mode
             _call_func = await f(event) if iscoroutinefunction(f) else f(event)
