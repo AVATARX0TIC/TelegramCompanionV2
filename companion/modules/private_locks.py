@@ -48,12 +48,8 @@ async def delete_lock(event):
     <b>return:</b> <i>Un-Locks messages of certain types (avaiable only in private)</i>
     """
     types = sql.get_restrictions()
-    if bool(event.message.forward) is True and types.get("forwards") is True:
+    if types.get(get_message_type(event.message)) is True:
         await event.delete()
-    else:
-        msg_type = get_message_type(event.message)
-        if types.get(msg_type) is True:
-            await event.delete()
 
 
 @CommandHandler(command="locks", parse_mode="html")

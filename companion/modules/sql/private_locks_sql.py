@@ -6,7 +6,7 @@ from . import connection, engine
 
 metadata = sa.MetaData()
 
-pm_locks = sa.Table("pm_locks", metadata,
+pm_locks = sa.Table("pm_lockables", metadata,
                     sa.Column("audio", sa.Boolean(), nullable=False),
                     sa.Column("voice", sa.Boolean(), nullable=False),
                     sa.Column("contact", sa.Boolean(), nullable=False),
@@ -21,7 +21,7 @@ pm_locks = sa.Table("pm_locks", metadata,
                     sa.Column("game", sa.Boolean(), nullable=False),
                     sa.Column("location", sa.Boolean(), nullable=False),
                     sa.Column("poll", sa.Boolean(), nullable=False),
-                    sa.Column("poll", sa.Boolean(), nullable=False),
+                    sa.Column("command", sa.Boolean(), nullable=False),
                     )
 
 if DB_URI:
@@ -68,6 +68,8 @@ def update_restriction(lock_type, is_locked):
         query = sa.update(pm_locks).values(location=locked)
     elif lock_type == "poll":
         query = sa.update(pm_locks).values(poll=locked)
+    elif lock_type == "command":
+        query = sa.update(pm_locks).values(command=locked)
     connection.execute(query)
     LOCKED.update({lock_type: is_locked})
 
@@ -91,7 +93,8 @@ def __init_table():
         forward=sa.false(),
         game=sa.false(),
         location=sa.false(),
-        poll=sa.false())
+        poll=sa.false(),
+        command=sa.false())
     connection.execute(query)
 
 

@@ -1,4 +1,5 @@
-from telethon.tl.types import Document, Photo, MessageEntityUrl, MessageEntityTextUrl
+from telethon.tl.types import Document, Photo, MessageEntityUrl, MessageEntityTextUrl, MessageEntityBotCommand
+from companion.utils.decorators.commandhandler import MessageEntityUserBotCommand
 
 def has_image(entity):
     if isinstance(entity, Photo):
@@ -24,7 +25,7 @@ def get_message_type(message):
         return "photo"
     elif message.gif:
         return "gif"
-    elif message.sicker:
+    elif message.sticker:
         return "sticker"
     elif message.document:
         return "document"
@@ -40,5 +41,7 @@ def get_message_type(message):
         for entity in message.entities:
             if isinstance(entity, (MessageEntityTextUrl, MessageEntityUrl)):
                 return "url"
+            if isinstance(entity, (MessageEntityBotCommand, MessageEntityUserBotCommand)):
+                return "command"
     else:
         return "text"

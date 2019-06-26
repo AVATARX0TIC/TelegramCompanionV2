@@ -75,12 +75,28 @@ def commandhandler(
 
             event.args = _args
 
+            if event.text:
+                if not event.text.startswith("/") and re.match(r"^\W\w+(?:\S.*)", event.text):
+                    cmd_ent = [MessageEntityUserBotCommand(event.text)]
+                    if hasattr(event, "message"):
+                        if event.message.entities:
+                            event.message.entities.append(cmd_ent)
+                        else:
+                            event.message.entities = cmd_ent
+
             client.parse_mode = parse_mode
             _call_func = await f(event) if iscoroutinefunction(f) else f(event)
             client.parse_mode = None
 
         return wrapper
     return decorator
+
+
+class MessageEntityUserBotCommand:
+    def __init__(self, text):
+        self.offset = 0
+        self.length = len(text)
+        self.cmd = re.match(r"^\W(\w+)", text).group(1)
 
 class CommandArguments:
     def __init__(self, *args, **kwargs):
