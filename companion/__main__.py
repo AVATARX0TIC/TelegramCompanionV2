@@ -3,6 +3,7 @@ import time
 
 import aiohttp
 
+from companion import CMD_HELP, MAX_TEXT_LEN, client, __version__
 from companion.modules import get_modules
 from companion.plugins import get_plugins
 from companion.utils import CommandHandler

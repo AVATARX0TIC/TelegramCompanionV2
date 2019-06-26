@@ -5,6 +5,7 @@ import sys
 from telethon.tl import types
 
 from companion.utils import CommandHandler
+from companion import EXCEPTION, MAX_TEXT_LEN, STATUS, STDERR, STDOUT
 
 
 async def aexec(code, event):

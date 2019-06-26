@@ -46,7 +46,7 @@ def get_message_type(message):
         for entity in message.entities:
             if isinstance(entity, (MessageEntityTextUrl, MessageEntityUrl)):
                 return "url"
-            if isinstance(
+            elif isinstance(
                 entity,
                 (MessageEntityBotCommand,
                  MessageEntityUserBotCommand)):

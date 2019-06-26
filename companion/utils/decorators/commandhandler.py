@@ -2,7 +2,7 @@ import re
 from inspect import iscoroutinefunction
 
 from telethon import events
-from companion import client
+from companion import client, CMD_HELP
 from companion.env_vars import CMD_PREFIX
 
 
@@ -84,8 +84,8 @@ def commandhandler(
 
                             event.message.entities.append(cmd_ent)
                         else:
-                            event.message.entities = []
-                            event.message.entities.append(cmd_ent)
+                            event.message.entities = [cmd_ent]
+
 
             client.parse_mode = parse_mode
             _call_func = await f(event) if iscoroutinefunction(f) else f(event)

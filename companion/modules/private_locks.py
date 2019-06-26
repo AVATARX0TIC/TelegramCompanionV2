@@ -1,5 +1,5 @@
 from telethon import events
-
+from companion import client
 from companion.modules.sql import private_locks_sql as sql
 from companion.utils import CommandHandler, sql_only
 from companion.utils.helpers.messages import get_message_type
@@ -37,7 +37,6 @@ async def unlock(event):
             await event.edit("<code>{}</code> messages are already unlocked".format(type))
     else:
         await event.edit("What are you trying to unlock?")
-
 
 @client.on(
     events.NewMessage(

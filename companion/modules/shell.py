@@ -1,5 +1,6 @@
 import asyncio
 
+from companion import MAX_TEXT_LEN, STATUS, STDERR, STDOUT
 from companion.utils import CommandHandler
 
 
