@@ -117,13 +117,15 @@ def load_plugin_info(pluginname):
 
     PLUGINS = sorted(get_plugins())
     plugin_dct = {}
+    plugin_path = "companion/plugins/{}/{}"
     for plugin in PLUGINS:
-        if plugin.split(
-                "/")[-1] == pluginname and os.path.isfile(plugin + ".plugin"):
-            config.read(plugin + ".plugin")
+        name, module = plugin.split(".")
+        if name == pluginname:
+            config.read(plugin_path.format(name, name) + ".plugin")
             for section in config.sections():
                 for option in config.options(section):
                     plugin_dct[option] = config.get(section, option)
+    print(plugin_dct)
     return plugin_dct
 
 
