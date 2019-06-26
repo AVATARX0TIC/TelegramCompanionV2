@@ -1,5 +1,6 @@
 from functools import wraps
 
+
 def admins_only(f):
     @wraps(f)
     async def wrapper(event):
@@ -17,6 +18,7 @@ def admins_only(f):
             chat_admin_rights = PrivateAdminRights()
             return await f(event, chat, chat_creator, chat_admin_rights)
     return wrapper
+
 
 class PrivateAdminRights:
     def __init__(self):

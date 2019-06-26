@@ -1,5 +1,5 @@
-from telethon.tl.types import (InputDocument, InputPhoto,
-                               MessageMediaPhoto, MessageMediaWebPage)
+from telethon.tl.types import (InputDocument, InputPhoto, MessageMediaPhoto,
+                               MessageMediaWebPage)
 
 from companion.modules.sql import global_notes_sql as sql
 from companion.utils import CommandHandler, sql_only

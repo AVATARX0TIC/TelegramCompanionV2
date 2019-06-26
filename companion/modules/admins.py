@@ -1,14 +1,22 @@
+import datetime
+
+from telethon.errors import UserNotParticipantError
+from telethon.tl.functions.channels import (EditBannedRequest,
+                                            GetParticipantRequest)
+from telethon.tl.types import (ChannelParticipantAdmin,
+                               ChannelParticipantBanned,
+                               ChannelParticipantCreator,
+                               ChannelParticipantSelf, ChatBannedRights, User)
+
 from companion.utils import CommandHandler
 from companion.utils.decorators.chat_status import admins_only
 
-from telethon.tl.functions.channels import EditBannedRequest
-from telethon.tl.types import (ChannelParticipantBanned, ChatBannedRights, ChannelParticipantSelf, ChannelParticipantAdmin, ChannelParticipantCreator, User)
-from telethon.tl.functions.channels import GetParticipantRequest
-from telethon.errors import UserNotParticipantError
-import datetime
 
-
-@CommandHandler(command="ban", args=["user"], private_lock=True, parse_mode='html')
+@CommandHandler(
+    command="ban",
+    args=["user"],
+    private_lock=True,
+    parse_mode='html')
 @admins_only
 async def ban(event, chat, chat_creator, chat_admin):
     """
@@ -35,7 +43,10 @@ async def ban(event, chat, chat_creator, chat_admin):
             except UserNotParticipantError:
                 await event.reply("This user is not a participant of this chat!")
                 return
-            if isinstance(chat_participant.participant, (ChannelParticipantAdmin, ChannelParticipantCreator)):
+            if isinstance(
+                chat_participant.participant,
+                (ChannelParticipantAdmin,
+                 ChannelParticipantCreator)):
                 await event.reply("I can't ban chat admins!")
             elif isinstance(chat_participant.participant, ChannelParticipantBanned):
                 await event.reply("This user has already been restricted in this chat!")
@@ -43,13 +54,17 @@ async def ban(event, chat, chat_creator, chat_admin):
                 await event.reply("You can't ban yourself!")
             else:
                 await event.client(EditBannedRequest(chat, ent.id, ChatBannedRights(until_date=None,
-                                                                      view_messages=True)))
+                                                                                    view_messages=True)))
                 await event.reply("Banned <code>{}</code>".format(ent.username or ent.first_name))
     else:
         await event.reply("You don't have the rights to restrict users here!")
 
 
-@CommandHandler(command="unban", args=["user"], private_lock=True, parse_mode='html')
+@CommandHandler(
+    command="unban",
+    args=["user"],
+    private_lock=True,
+    parse_mode='html')
 @admins_only
 async def unban(event, chat, chat_creator, chat_admin):
     """
@@ -76,7 +91,10 @@ async def unban(event, chat, chat_creator, chat_admin):
             except UserNotParticipantError:
                 await event.reply("This user is not a participant of this chat!")
                 return
-            if isinstance(chat_participant.participant, (ChannelParticipantAdmin, ChannelParticipantCreator)):
+            if isinstance(
+                chat_participant.participant,
+                (ChannelParticipantAdmin,
+                 ChannelParticipantCreator)):
                 await event.reply("I can't unban chat admins because they can't be banned!")
             elif not isinstance(chat_participant.participant, ChannelParticipantBanned):
                 await event.reply("This user isn't banned in this chat!")
@@ -85,12 +103,17 @@ async def unban(event, chat, chat_creator, chat_admin):
             else:
                 print(chat_participant.participant)
                 await event.client(EditBannedRequest(chat, ent.id, ChatBannedRights(until_date=None,
-                                                                      view_messages=None)))
+                                                                                    view_messages=None)))
                 await event.reply("Un-Banned <code>{}</code>".format(ent.username or ent.first_name))
     else:
         await event.reply("You don't have the rights to restrict users here!")
 
-@CommandHandler(command="kick", args=["user"], private_lock=True, parse_mode='html')
+
+@CommandHandler(
+    command="kick",
+    args=["user"],
+    private_lock=True,
+    parse_mode='html')
 @admins_only
 async def kick(event, chat, chat_creator, chat_admin):
     """
@@ -117,7 +140,10 @@ async def kick(event, chat, chat_creator, chat_admin):
             except UserNotParticipantError:
                 await event.reply("This user is not a participant of this chat!")
                 return
-            if isinstance(chat_participant.participant, (ChannelParticipantAdmin, ChannelParticipantCreator)):
+            if isinstance(
+                chat_participant.participant,
+                (ChannelParticipantAdmin,
+                 ChannelParticipantCreator)):
                 await event.reply("I can't kick chat admins!")
             elif isinstance(chat_participant.participant, ChannelParticipantBanned):
                 await event.reply("This user has already been restricted in this chat!")
@@ -126,10 +152,11 @@ async def kick(event, chat, chat_creator, chat_admin):
             else:
                 print(chat_participant.participant)
                 await event.client(EditBannedRequest(chat, ent.id, ChatBannedRights(until_date=datetime.timedelta(seconds=1),
-                                                                      view_messages=None)))
+                                                                                    view_messages=None)))
                 await event.reply("Kicked <code>{}</code>".format(ent.username or ent.first_name))
     else:
         await event.reply("You don't have the rights to restrict users here!")
+
 
 @CommandHandler(command="pin", args=["loud"], parse_mode='html')
 @admins_only

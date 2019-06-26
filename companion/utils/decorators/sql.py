@@ -1,6 +1,8 @@
 
 from functools import wraps
+
 from companion.env_vars import DB_URI
+
 
 def sql_only(reply=True):
     def _sql_only(f):

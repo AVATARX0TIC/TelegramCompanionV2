@@ -47,7 +47,6 @@ if PROXY_TYPE:
         PASSWORD)
 
 
-
 # Misc variables
 
 STDOUT = "<b>Query:</b>\n<code>{}</code>\n\n<b>Result:</b>\n<code>{}</code>"
@@ -57,5 +56,10 @@ STATUS = "<b>Query:</b>\n<code>{}</code>\n\n<b>Status:</b>\n<code>{}</code>"
 
 # Client setup
 
-client = TelegramClient(SESSION, API_ID, API_HASH, device_model="tg_companion", app_version=__version__)
+client = TelegramClient(
+    SESSION,
+    API_ID,
+    API_HASH,
+    device_model="tg_companion",
+    app_version=__version__)
 client.parse_mode = None

@@ -1,25 +1,28 @@
 import asyncio
-from companion.pluginmanager import download_plugins
 import os
 import re
 import sys
 
+from companion.pluginmanager import download_plugins
+
 loop = asyncio.get_event_loop()
+
 
 async def install_plugins():
     if os.path.isfile("plugins.txt"):
         with open("plugins.txt", "r") as file:
             for line in file.readlines():
                 to_match = re.match(
-                        r"([^\/]+)\/([^\/]+)(\/([^\/]+)(\/(.*))?)?",
-                        line.strip())
+                    r"([^\/]+)\/([^\/]+)(\/([^\/]+)(\/(.*))?)?",
+                    line.strip())
                 if to_match:
                     await download_plugins(
-                                    user=to_match.group(1),
-                                    repo=to_match.group(2),
-                                    plugin=to_match.group(4))
+                        user=to_match.group(1),
+                        repo=to_match.group(2),
+                        plugin=to_match.group(4))
                 else:
                     await download_plugins(plugin=line.strip())
+
 
 async def init():
     await install_plugins()
@@ -34,6 +37,3 @@ async def init():
 
 if __name__ == "__main__":
     loop.run_until_complete(init())
-
-
-

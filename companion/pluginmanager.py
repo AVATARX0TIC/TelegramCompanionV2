@@ -1,12 +1,12 @@
 import asyncio
+import configparser
 import importlib.util
 import logging
 import os
 import re
+import shutil
 import sys
 from argparse import ArgumentParser
-import configparser
-import shutil
 
 import aiohttp
 
@@ -70,7 +70,7 @@ async def download_plugins(user="nitanmarcel", repo="TgCompanionPlugins", plugin
         modules_to_load = config.get("CORE", "modules").split(",")
         try:
             requirements = config.get("CORE", "requirements").split(",")
-        except:
+        except BaseException:
             requirements = None
         if requirements:
             for module in requirements:

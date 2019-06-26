@@ -91,8 +91,10 @@ def rem_note(name):
 def get_note(name):
     return NOTES.get(name)
 
+
 def get_all_notes():
     return [note[0] for note in NOTES.items()]
+
 
 def __load_notes():
     global Notes

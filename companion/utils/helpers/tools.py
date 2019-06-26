@@ -1,6 +1,6 @@
 import math
-from PIL import Image
 
+from PIL import Image
 
 
 def resize_image(image, size, save_location):

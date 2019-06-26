@@ -2,7 +2,6 @@ from telethon import events
 from telethon.tl.functions.contacts import BlockRequest
 from telethon.tl.types import InputPeerSelf, InputUserSelf
 
-from companion import client
 from companion.env_vars import ANTI_SPAM
 from companion.modules.sql import private_messages_sql as sql
 from companion.utils import CommandHandler, sql_only

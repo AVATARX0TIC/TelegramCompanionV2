@@ -1,6 +1,5 @@
 import asyncio
 
-from companion import MAX_TEXT_LEN, STATUS, STDERR, STDOUT
 from companion.utils import CommandHandler
 
 
@@ -15,7 +14,6 @@ async def terminal(event):
     if not cmd:
         await event.edit(STATUS.format("None", "No command given!"))
         return
-
 
     process = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
     await event.edit("Connecting to PID: <code>{}</code>".format(process.pid))

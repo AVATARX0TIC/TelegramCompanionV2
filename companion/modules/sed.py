@@ -12,7 +12,15 @@ FLAGS = {
 }
 
 
-@CommandHandler(command="sed/", prefix=None, args=["to_replace", "replace_with", "flag"], args_delimiter="/", parse_mode="md")
+@CommandHandler(
+    command="sed/",
+    prefix=None,
+    args=[
+        "to_replace",
+        "replace_with",
+        "flag"],
+    args_delimiter="/",
+    parse_mode="md")
 async def sed(event):
     """
     <b>param:</b> <code>to_replace/replace_with/optional_flag or times to replace in string</code>

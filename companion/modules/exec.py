@@ -1,9 +1,10 @@
+import html
 import io
 import sys
-import html
-from companion import EXCEPTION, MAX_TEXT_LEN, STATUS, STDERR, STDOUT
-from companion.utils import CommandHandler
+
 from telethon.tl import types
+
+from companion.utils import CommandHandler
 
 
 async def aexec(code, event):

@@ -1,8 +1,8 @@
 import importlib
-import aiohttp
 import time
 
-from companion import CMD_HELP, MAX_TEXT_LEN, client, __version__
+import aiohttp
+
 from companion.modules import get_modules
 from companion.plugins import get_plugins
 from companion.utils import CommandHandler
@@ -31,7 +31,7 @@ async def start(event):
     telethon_version = __import__("telethon").__version__
 
     await event.edit("Telegram Companion is up and running!\n"
-					  "<i>Companion</i>(<b>{}</b>), <i>Python</i>(<b>{}</b>), <i>Telethon</i>(<b>{}</b>), <i>PingTime</i>(<b>{}ms</b>)".format(companion_version, python_version, telethon_version, round(ping_time, 2)))
+                     "<i>Companion</i>(<b>{}</b>), <i>Python</i>(<b>{}</b>), <i>Telethon</i>(<b>{}</b>), <i>PingTime</i>(<b>{}ms</b>)".format(companion_version, python_version, telethon_version, round(ping_time, 2)))
 
 
 @CommandHandler("help", args=["command"], parse_mode="html")
@@ -73,7 +73,6 @@ async def help(event):
 
     if OUTPUT:
         await event.reply("Here are all the commands you can use: \n\n{}".format(OUTPUT))
-
 
 
 if __name__ == "__main__":
