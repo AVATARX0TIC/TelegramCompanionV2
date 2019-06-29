@@ -1,9 +1,11 @@
 from html import escape
 
+from companion import client
+from telethon import events
 from telethon.errors import UserIdInvalidError
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import ChannelParticipantsAdmins
-
+import re
 from companion.utils import CommandHandler
 
 
@@ -81,3 +83,18 @@ async def chat_admins(event):
                     admin.username or admin.first_name))
 
     await event.edit(admins)
+
+
+@CommandHandler(command=None, func=lambda e: e.text)
+@client.on(events.MessageEdited(outgoing=True, func=lambda e: e.text))
+async def text_strikedown(event):
+    text = event.text
+    match = re.findall("~~(.*?)~~", text, re.DOTALL)
+    if match:
+        for m in match:
+            text = re.sub("~~{}~~".format(re.escape(m)), "\u0336".join(m) + "\u0336", text)
+        match = re.findall("\u0336".join("\n\n"), text, re.DOTALL)
+        if match:
+            for m in match:
+                text = re.sub(m, "\n\n", text)
+        await event.edit(text)
