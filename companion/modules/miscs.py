@@ -76,7 +76,7 @@ async def chat_admins(event):
     admins = "<b>Admins in this chat:</b>\n"
     async for admin in event.client.iter_participants(await event.get_input_chat(), filter=ChannelParticipantsAdmins):
         if not admin.deleted:
-            admins += "\n<a href=\"tg://user?id={}\">{}</a> - {}".format(
+            admins += "\n{}<a href=\"tg://user?id={}\">{}</a>".format(
                 "🤖" if admin.bot else "👤", admin.id, escape(
                     admin.username or admin.first_name))
 
