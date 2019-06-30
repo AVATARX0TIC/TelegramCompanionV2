@@ -87,14 +87,8 @@ async def chat_admins(event):
 
 @CommandHandler(command=None, func=lambda e: e.text)
 @client.on(events.MessageEdited(outgoing=True, func=lambda e: e.text))
-async def text_strikedown(event):
-    text = event.text
-    match = re.findall("~~(.*?)~~", text, re.DOTALL)
-    if match:
-        for m in match:
-            text = re.sub("~~{}~~".format(re.escape(m)), "\u0336".join(m) + "\u0336", text)
-        match = re.findall("\u0336".join("\n\n"), text, re.DOTALL)
-        if match:
-            for m in match:
-                text = re.sub(m, "\n\n", text)
-        await event.edit(text)
+async def text_strikethrough(event):
+    text = re.sub(r'~~(\s*)([\w\s]+?)(\s*)~~',
+                  (lambda m: m.group(1) + ''.join('̶' + c + '̶' if c.isalnum() else c for c in m.group(2)) + m.group(3)),
+                  event.text)
+    await event.edit(text)
