@@ -97,4 +97,5 @@ async def afk(event):
         afk_msg = "I'm afk since {} \n**Reason:** {}".format(
             afk_since, AFK_REASON)
 
-    await event.reply(afk_msg)
+    if not event.text.startswith("I'm afk since"):
+        await event.reply(afk_msg)
