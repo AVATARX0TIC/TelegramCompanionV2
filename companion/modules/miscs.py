@@ -91,4 +91,8 @@ async def text_strikethrough(event):
     text = re.sub(r'~~(\s*)([\w\s]+?)(\s*)~~',
                   (lambda m: m.group(1) + ''.join('̶' + c + '̶' if c.isalnum() else c for c in m.group(2)) + m.group(3)),
                   event.text)
-    await event.edit(text)
+    text = re.sub(r'_(\s*)([\w\s]+?)(\s*)_',
+                  (lambda m: m.group(1) + ''.join('͟' + c + '͟' if c.isalnum() else c for c in m.group(2)) + m.group(3)),
+                  text)
+    if text != event.text:
+        await event.edit(text)
