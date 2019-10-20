@@ -44,15 +44,17 @@ async def remind(event):
             message = event.args.message
             if not event.is_reply:
                 if message:
-                    to_sched = event.message
+                    to_sched = message.split(None, 1)[1]
                 else:
                     await event.reply('Missing message to schedule!')
                     return
             else:
                 to_sched = await event.get_reply_message()
-
-            await to_sched.forward_to(await event.get_chat(), schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message to chat for {}!'.format(after.strftime('%c %z')))
+            if isinstance(to_sched, str):
+                await event.client.send_message(await event.get_chat(), to_sched, schedule=datetime.datetime.timestamp(after))
+            else:
+                await to_sched.forward_to(await event.get_chat(), schedule=datetime.datetime.timestamp(after))
+            await event.reply('Scheduled message to this chat for {}!'.format(after.strftime('%c %z')))
 
 
 @CommandHandler(command='remindme', args=['date', 'message'])
@@ -95,12 +97,15 @@ async def remindme(event):
             message = event.args.message
             if not event.is_reply:
                 if message:
-                    to_sched = event.message.split(None, 1)[1]
+                    to_sched = message.split(None, 1)[1]
                 else:
                     await event.reply('Missing message to schedule!')
                     return
             else:
                 to_sched = await event.get_reply_message()
 
-            await to_sched.forward_to('me', schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message to myself for {}!'.format(after.strftime('%d, %b, %H:%M, %Y')))
+            if isinstance(to_sched, str):
+                await event.client.send_message('me', to_sched, schedule=datetime.datetime.timestamp(after))
+            else:
+                await to_sched.forward_to('me', schedule=datetime.datetime.timestamp(after))
+            await event.reply('Scheduled message to myself for {}!'.format(after.strftime('%c %z')))
