@@ -7,7 +7,7 @@ from companion.utils import CommandHandler
 @CommandHandler(command='remind', args=['date', 'message'])
 async def remind(event):
     """
-    <b>param:</b> <code>the date to which the message will be scheduled</code>
+    <b>param:</b> <code>the date to which the message will be scheduled in format [x]d[x]h[x]m[x]s</code>
     <b>param:</b> <code>the message will be scheduled. Ignore if it's reply</code>
     <b>return:</b> <i>Scheduled message at a specific time to chat</i>
     """
@@ -58,7 +58,7 @@ async def remind(event):
 @CommandHandler(command='remindme', args=['date', 'message'])
 async def remindme(event):
     """
-    <b>param:</b> <code>the date to which the message will be scheduled</code>
+    <b>param:</b> <code>the date to which the message will be scheduled in format [x]d[x]h[x]m[x]s</code>
     <b>param:</b> <code>the message will be scheduled. Ignore if it's reply</code>
     <b>return:</b> <i>Scheduled message at a specific time to yourself</i>
     """
