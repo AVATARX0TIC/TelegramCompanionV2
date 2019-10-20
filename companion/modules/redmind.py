@@ -1,15 +1,21 @@
-from companion.utils import CommandHandler
 import datetime
 import re
+
+from companion.utils import CommandHandler
 
 
 @CommandHandler(command='remind', args=['date', 'message'])
 async def remind(event):
+    """
+    <b>param:</b> <code>the date to which the message will be scheduled</code>
+    <b>param:</b> <code>the message will be scheduled. Ignore if it's reply</code>
+    <b>return:</b> <i>Scheduled message at a specific time to chat</i>
+    """
     str_time = event.args.date
     if not str_time:
         await event.reply('Invalid time!')
     else:
-        pattern = '\d*d|\d*h|\d*m|\d*s'
+        pattern = r'\d*d|\d*h|\d*m|\d*s'
         findall = re.findall(pattern, str_time)
         days = 0
         hours = 0
@@ -30,7 +36,10 @@ async def remind(event):
                     seconds = match[:-1]
 
             now = datetime.datetime.now()
-            after = now + datetime.timedelta(days=int(days), hours=int(hours), minutes=int(minutes), seconds=int(seconds))
+            after = now + datetime.timedelta(days=int(days),
+                                             hours=int(hours),
+                                             minutes=int(minutes),
+                                             seconds=int(seconds))
 
             message = event.args.message
             if not event.is_reply:
@@ -43,15 +52,21 @@ async def remind(event):
                 to_sched = await event.get_reply_message()
 
             await to_sched.forward_to(await event.get_chat(), schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message for {}!'.format(after.strftime('%d, %b, %H:%M, %Y')))
+            await event.reply('Scheduled message to chat for {}!'.format(after.strftime('%d, %b, %H:%M, %Y')))
+
 
 @CommandHandler(command='remindme', args=['date', 'message'])
 async def remindme(event):
+    """
+    <b>param:</b> <code>the date to which the message will be scheduled</code>
+    <b>param:</b> <code>the message will be scheduled. Ignore if it's reply</code>
+    <b>return:</b> <i>Scheduled message at a specific time to yourself</i>
+    """
     str_time = event.args.date
     if not str_time:
         await event.reply('Invalid time!')
     else:
-        pattern = '\d*d|\d*h|\d*m|\d*s'
+        pattern = r'\d*d|\d*h|\d*m|\d*s'
         findall = re.findall(pattern, str_time)
         days = 0
         hours = 0
@@ -72,7 +87,10 @@ async def remindme(event):
                     seconds = match[:-1]
 
             now = datetime.datetime.now()
-            after = now + datetime.timedelta(days=int(days), hours=int(hours), minutes=int(minutes), seconds=int(seconds))
+            after = now + datetime.timedelta(days=int(days),
+                                             hours=int(hours),
+                                             minutes=int(minutes),
+                                             seconds=int(seconds))
 
             message = event.args.message
             if not event.is_reply:
@@ -85,4 +103,4 @@ async def remindme(event):
                 to_sched = await event.get_reply_message()
 
             await to_sched.forward_to('me', schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message for {}!'.format(after.strftime('%d, %b, %H:%M, %Y')))
+            await event.reply('Scheduled message to myself for {}!'.format(after.strftime('%d, %b, %H:%M, %Y')))
