@@ -44,7 +44,7 @@ async def remind(event):
             message = event.args.message
             if not event.is_reply:
                 if message:
-                    to_sched = message.split(None, 1)[1]
+                    to_sched = message
                 else:
                     await event.reply('Missing message to schedule!')
                     return
@@ -97,7 +97,7 @@ async def remindme(event):
             message = event.args.message
             if not event.is_reply:
                 if message:
-                    to_sched = message.split(None, 1)[1]
+                    to_sched = message
                 else:
                     await event.reply('Missing message to schedule!')
                     return
