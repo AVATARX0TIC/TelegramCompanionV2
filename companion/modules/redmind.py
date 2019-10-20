@@ -52,7 +52,7 @@ async def remind(event):
                 to_sched = await event.get_reply_message()
 
             await to_sched.forward_to(await event.get_chat(), schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message to chat for {}!'.format(after.strftime('%d, %b, %H:%M, %Y')))
+            await event.reply('Scheduled message to chat for {}!'.format(after.strftime('%c %z')))
 
 
 @CommandHandler(command='remindme', args=['date', 'message'])

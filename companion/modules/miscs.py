@@ -1,11 +1,11 @@
 from html import escape
-
-from companion import client
-from telethon import events
+import re
 from telethon.errors import UserIdInvalidError
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import ChannelParticipantsAdmins
-import re
+from telethon.tl.functions.account import UpdateNotifySettingsRequest
+from telethon.tl.types import User, InputPeerNotifySettings
+import datetime
 from companion.utils import CommandHandler
 
 
@@ -83,3 +83,80 @@ async def chat_admins(event):
                     admin.username or admin.first_name))
 
     await event.edit(admins, parse_mode='html')
+
+
+@CommandHandler(command='readall')
+async def readall(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>Marks all the unread messages as read!</i>
+    """
+    await event.edit("Marking all the unread messages as read.. Please wait...")
+    async for dialog in event.client.iter_dialogs(limit=None):
+        await event.send_read_acknowledge(dialog, clear_mentions=True)
+    await event.edit("Yay. All the messages are marked as read")
+
+
+@CommandHandler(command='disconnect')
+async def disconnect(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>Disconnects the companion from Telegram.</i>
+    """
+    await event.edit("Thanks for using Telegram Companion. Goodbye!")
+    await event.client.disconnect()
+
+@CommandHandler(command='logout')
+async def logout(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>Logs out the companion from Telegram and deletes the session.</i>
+    """
+    await event.edit("Thanks for using Telegram Companion. Logging out.. Goodbye!")
+    await event.client.log_out()
+
+
+
+@CommandHandler(command='mute', args=['date'])
+async def mute_chat(event):
+    """
+    <b>param:</b> <code>the date untill the chat will be muted in format [x]d[x]h[x]m[x]s</code>
+    <b>return:</b> <i>Mutes a chat for a given time!</i>
+    """
+    str_time = event.args.date
+    if not str_time:
+        await event.reply('Invalid time!')
+    else:
+        pattern = r'\d*d|\d*h|\d*m|\d*s'
+        findall = re.findall(pattern, str_time)
+        days = 0
+        hours = 0
+        minutes = 0
+        seconds = 0
+        if not findall:
+            await event.reply('Invalid time!')
+        else:
+            for match in findall:
+
+                if match.endswith('d'):
+                    days = match[:-1]
+                if match.endswith('h'):
+                    hours = match[:-1]
+                if match.endswith('m'):
+                    minutes = match[:-1]
+                if match.endswith('s'):
+                    seconds = match[:-1]
+
+            now = datetime.datetime.now()
+            after = now + datetime.timedelta(days=int(days),
+                                             hours=int(hours),
+                                             minutes=int(minutes),
+                                             seconds=int(seconds))
+            mute_for = await event.client(UpdateNotifySettingsRequest(peer=event.chat_id,
+                                                                      settings=InputPeerNotifySettings(
+                                                                              show_previews=False,
+                                                                              mute_until=datetime.datetime.timestamp(after))))
+            if mute_for:
+                await event.edit(f"Chat muted until: {after.strftime('%c %z')}")
+            else:
+                await event.edit("Failed to mute this chat!")
