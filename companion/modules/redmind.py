@@ -1,7 +1,8 @@
 import datetime
 import re
-
+from io import BytesIO
 from companion.utils import CommandHandler
+from telethon.tl.functions.messages import GetScheduledHistoryRequest
 
 
 @CommandHandler(command='remind', args=['date', 'message'])
@@ -109,3 +110,22 @@ async def remindme(event):
             else:
                 await to_sched.forward_to('me', schedule=datetime.datetime.timestamp(after))
             await event.reply('Scheduled message to myself for {}!'.format(after.strftime('%c %z')))
+
+
+
+@CommandHandler(command='reminders')
+async def get_reminders(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>get all reminders from a chat in UTC timezone.</i>
+    """
+    scheduled = await event.client(GetScheduledHistoryRequest(peer=await event.get_chat(), hash=0))
+    sched_file = ''
+    if not scheduled.messages:
+        await event.edit('There are no reminders in this chat!')
+    else:
+        for message in scheduled.messages:
+            sched_file += '\n{}\n-------\n\n{}\n\n-------\n\n'.format(message.date.strftime('%c %Z'), message.message or 'MessageWIthNoText')
+        with BytesIO(str.encode(sched_file)) as output:
+            output.name = 'scheduled.txt'
+            await event.reply(file=output)
