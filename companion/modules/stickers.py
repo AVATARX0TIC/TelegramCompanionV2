@@ -79,21 +79,23 @@ async def kang_image(event, file):
             await conv.send_message("/done")
     await event.edit("Sticker added! Your pack can be found [here](https://t.me/addstickers/{})".format(packshort), parse_mode='md')
 
+
 async def kang_animated(event, file):
     st_emoji = event.args.emoji or "🤔"
     if st_emoji not in (list(emoji.EMOJI_UNICODE.values())):
         await event.edit("Not a valid emoji!")
         return
     user = await event.get_sender()
-    packname = "{}'s animated sticker pack!".format(user.username or user.first_name)
+    packname = "{}'s animated sticker pack!".format(
+        user.username or user.first_name)
     packshort = "tg_companion_anim_" + str(user.id)
     await event.edit("Processing sticker! Please wait...")
 
     async with event.client.conversation('Stickers') as conv:
         until_time = (
-                datetime.datetime.now() +
-                datetime.timedelta(
-                        minutes=1)).timestamp()
+            datetime.datetime.now() +
+            datetime.timedelta(
+                minutes=1)).timestamp()
         await event.client(UpdateNotifySettingsRequest(peer="Stickers",
                                                        settings=InputPeerNotifySettings(show_previews=False,
                                                                                         mute_until=until_time)))
@@ -124,6 +126,10 @@ async def kang_animated(event, file):
             file = await event.client.download_file(file)
             uploaded_sticker = await event.client.upload_file(file, file_name="sticker.tgs")
             await conv.send_file(file=uploaded_sticker)
+            response = await conv.get_response()
+            if not response.text.startswith('Thanks!'):
+                await event.edit(response.text)
+                return
             await conv.send_message(st_emoji)
             await conv.send_message("/publish")
             await conv.send_message("<" + packname + ">")
@@ -136,9 +142,14 @@ async def kang_animated(event, file):
             file = await event.client.download_file(file)
             uploaded_sticker = await event.client.upload_file(file, file_name="sticker.tgs")
             await conv.send_file(file=uploaded_sticker)
+            response = await conv.get_response()
+            if not response.text.startswith('Thanks!'):
+                await event.edit(response.text)
+                return
             await conv.send_message(st_emoji)
             await conv.send_message("/done")
         await event.edit("Sticker added! Your pack can be found [here](https://t.me/addstickers/{})".format(packshort), parse_mode='md')
+
 
 @CommandHandler(command="kang", args=["emoji"], parse_mode='md')
 async def kang_base(event):

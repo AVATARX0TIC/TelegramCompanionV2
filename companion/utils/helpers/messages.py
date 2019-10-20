@@ -15,6 +15,16 @@ def has_image(entity):
     return False
 
 
+def sticker_animated(entity):
+    if isinstance(entity, Document):
+        if entity.mime_type.split("/")[1] == 'x-tgsticker':
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
 def get_message_type(message):
     if message.forward:
         return "forward"

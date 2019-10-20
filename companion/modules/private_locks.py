@@ -38,6 +38,7 @@ async def unlock(event):
     else:
         await event.edit("What are you trying to unlock?")
 
+
 @client.on(
     events.NewMessage(
         incoming=True,

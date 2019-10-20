@@ -86,7 +86,6 @@ def commandhandler(
                         else:
                             event.message.entities = [cmd_ent]
 
-
             client.parse_mode = parse_mode
             _call_func = await f(event) if iscoroutinefunction(f) else f(event)
             client.parse_mode = None
