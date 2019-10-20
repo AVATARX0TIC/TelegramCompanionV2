@@ -55,7 +55,7 @@ async def ban(event, chat, chat_creator, chat_admin):
             else:
                 await event.client(EditBannedRequest(chat, ent.id, ChatBannedRights(until_date=None,
                                                                                     view_messages=True)))
-                await event.reply("Banned <code>{}</code>".format(ent.username or ent.first_name))
+                await event.reply("Banned <code>{}</code>".format(ent.username or ent.first_name), parse_mode='html')
     else:
         await event.reply("You don't have the rights to restrict users here!")
 
@@ -104,7 +104,7 @@ async def unban(event, chat, chat_creator, chat_admin):
                 print(chat_participant.participant)
                 await event.client(EditBannedRequest(chat, ent.id, ChatBannedRights(until_date=None,
                                                                                     view_messages=None)))
-                await event.reply("Un-Banned <code>{}</code>".format(ent.username or ent.first_name))
+                await event.reply("Un-Banned <code>{}</code>".format(ent.username or ent.first_name), parse_mode='html')
     else:
         await event.reply("You don't have the rights to restrict users here!")
 
@@ -153,7 +153,7 @@ async def kick(event, chat, chat_creator, chat_admin):
                 print(chat_participant.participant)
                 await event.client(EditBannedRequest(chat, ent.id, ChatBannedRights(until_date=datetime.timedelta(seconds=1),
                                                                                     view_messages=None)))
-                await event.reply("Kicked <code>{}</code>".format(ent.username or ent.first_name))
+                await event.reply("Kicked <code>{}</code>".format(ent.username or ent.first_name), parse_mode='html')
     else:
         await event.reply("You don't have the rights to restrict users here!")
 

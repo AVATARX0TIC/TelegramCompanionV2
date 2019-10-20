@@ -70,4 +70,4 @@ async def execute(event):
         await event.edit(STATUS.format(code, "Output too long!"))
         return
 
-    await event.edit(RESULT)
+    await event.edit(RESULT, parse_mode='html')

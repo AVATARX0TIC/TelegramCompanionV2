@@ -57,7 +57,7 @@ async def save(event):
             access_hash,
             file_id,
             file_reference)
-        await event.reply("Note `{}` saved! get it with `get {}`".format(event.args.notename, event.args.notename))
+        await event.reply("Note `{}` saved! get it with `get {}`".format(event.args.notename, event.args.notename), parse_mode='md')
     else:
         await event.edit("There's no note name given!")
 
@@ -88,7 +88,7 @@ async def get(event):
             await event.client.send_message(await event.get_input_chat(),
                                             message=note.content, file=file, reply_to=event.message)
         else:
-            await event.edit("There's no note named `{}`".format(event.args.notename))
+            await event.edit("There's no note named `{}`".format(event.args.notename), parse_mode='md')
     else:
         await event.edit("I can't find any notes with that!")
 
@@ -103,7 +103,7 @@ async def rmnote(event):
     if event.args.notename:
         to_remove = sql.rem_note(event.args.notename)
         if to_remove is True:
-            await event.edit("Successfully removed <cde>{}</code>".format(event.args.notename))
+            await event.edit("Successfully removed <cde>{}</code>".format(event.args.notename), parse_mode='html')
         else:
             await event.edit("There's no note with that name!")
     else:
@@ -120,4 +120,4 @@ async def getnotes(event):
     notes = "<b>Globally saved notes:</b>\n\n"
     for note in sql.get_all_notes():
         notes += "\n- <code>{}</code>".format(note)
-    await event.reply(notes)
+    await event.reply(notes, parse_mode='html')

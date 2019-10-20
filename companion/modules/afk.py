@@ -37,7 +37,7 @@ async def set_afk(event):
     if event.args.reason:
         AFK_REASON = event.args.reason
 
-    await event.edit("<b>I will be afk for a while!</b>" + "\n<i>Reason:</i> {}".format(AFK_REASON) if AFK_REASON else "<b>I will be afk for a while!</b>")
+    await event.edit("<b>I will be afk for a while!</b>" + "\n<i>Reason:</i> {}".format(AFK_REASON) if AFK_REASON else "<b>I will be afk for a while!</b>", parse_mode='html')
     raise StopPropagation
 
 
@@ -47,7 +47,7 @@ async def unset_afk(event):
     global AFK_REASON
     IS_AFK, AFK_REASON = None, None
 
-    await event.client.send_message(event.input_chat, "<b>I'm no longer afk!</b>")
+    await event.client.send_message(event.input_chat, "<b>I'm no longer afk!</b>", parse_mode='html')
 
 
 def __afk_lock(event):
@@ -98,4 +98,4 @@ async def afk(event):
             afk_since, AFK_REASON)
 
     if not event.text.startswith("I'm afk since"):
-        await event.reply(afk_msg)
+        await event.reply(afk_msg, parse_mode='md')

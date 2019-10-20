@@ -34,4 +34,4 @@ async def terminal(event):
         await event.edit(STATUS.format(cmd, "Output too long!"))
         return
 
-    await event.edit(RESULT)
+    await event.edit(RESULT, parse_mode='html')

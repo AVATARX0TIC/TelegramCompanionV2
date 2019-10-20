@@ -65,7 +65,7 @@ async def sed(event):
             elif flag.lower() in "ilmsax":
                 flags |= FLAGS[flag.lower()]
             else:
-                await event.edit("Unknown flag: <code>{}</code>".format(regex_group.group(3)))
+                await event.edit("Unknown flag: <code>{}</code>".format(regex_group.group(3)), parse_mode='html')
                 return
 
     final_text = re.sub(

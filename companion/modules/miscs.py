@@ -65,7 +65,7 @@ async def user_info(event):
         INFO += "\nI have <code>{}</code> chats in common with this user.".format(
             common_chats)
 
-    await event.client.send_message(event.input_chat, INFO, reply_to=message.id, file=profile_photo)
+    await event.client.send_message(event.input_chat, INFO, reply_to=message.id, file=profile_photo, parse_mode='html')
     await event.delete()
 
 
@@ -82,4 +82,4 @@ async def chat_admins(event):
                 "🤖" if admin.bot else "👤", admin.id, escape(
                     admin.username or admin.first_name))
 
-    await event.edit(admins)
+    await event.edit(admins, parse_mode='html')

@@ -13,9 +13,9 @@ async def lock(event):
     if type in lockables:
         if lockables.get(type) is False:
             sql.update_restriction(type, True)
-            await event.edit("Locked <code>{}</code>".format(type))
+            await event.edit("Locked <code>{}</code>".format(type), parse_mode='html')
         else:
-            await event.edit("<code>{}</code> messages are already locked".format(type))
+            await event.edit("<code>{}</code> messages are already locked".format(type), parse_mode='html')
     else:
         await event.edit("What are you trying to lock?")
 
@@ -32,9 +32,9 @@ async def unlock(event):
     if type in lockables:
         if lockables.get(type) is True:
             sql.update_restriction(type, False)
-            await event.edit("Unlocked <code>{}</code>".format(type))
+            await event.edit("Unlocked <code>{}</code>".format(type), parse_mode='html')
         else:
-            await event.edit("<code>{}</code> messages are already unlocked".format(type))
+            await event.edit("<code>{}</code> messages are already unlocked".format(type), parse_mode='html')
     else:
         await event.edit("What are you trying to unlock?")
 
@@ -59,4 +59,4 @@ async def locktypes(event):
     <b>param:</b> <code>None</code>
     <b>return:</b> <i>Returns a list with all of the possible locktypes</i>
     """
-    await event.edit("LockTypes:\n- " + " \n- ".join(sorted(list(sql.get_restrictions()))))
+    await event.edit("LockTypes:\n- " + " \n- ".join(sorted(list(sql.get_restrictions()))), parse_mode='html')
