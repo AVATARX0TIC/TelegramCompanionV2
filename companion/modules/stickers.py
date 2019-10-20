@@ -8,10 +8,10 @@ from telethon.tl.functions.account import UpdateNotifySettingsRequest
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import (DocumentAttributeFilename,
                                DocumentAttributeSticker,
-                               InputStickerSetID,
                                InputMediaUploadedDocument,
-                               InputPeerNotifySettings,
+                               InputPeerNotifySettings, InputStickerSetID,
                                InputStickerSetShortName)
+
 from companion.utils import CommandHandler
 from companion.utils.helpers.messages import has_image, sticker_animated
 from companion.utils.helpers.tools import resize_image
@@ -31,7 +31,9 @@ async def kang_image(event, file):
             datetime.datetime.now() +
             datetime.timedelta(
                 minutes=1)).timestamp()
-        await event.client(UpdateNotifySettingsRequest(peer="Stickers", settings=InputPeerNotifySettings(show_previews=False, mute_until=until_time)))
+        await event.client(UpdateNotifySettingsRequest(peer="Stickers",
+                                                       settings=InputPeerNotifySettings(show_previews=False,
+                                                                                        mute_until=until_time)))
 
         try:
             await conv.send_message("/cancel")
@@ -64,7 +66,9 @@ async def kang_image(event, file):
                 await event.edit(response.text)
                 return
 
-            await conv.send_file(InputMediaUploadedDocument(file=uploaded_sticker, mime_type='image/png', attributes=[DocumentAttributeFilename("sticker.png")]), force_document=True)
+            await conv.send_file(InputMediaUploadedDocument(file=uploaded_sticker, mime_type='image/png',
+                                                            attributes=[DocumentAttributeFilename("sticker.png")]),
+                                 force_document=True)
             await conv.send_message(st_emoji)
             await conv.send_message("/publish")
             await conv.send_message("/skip")
@@ -78,7 +82,8 @@ async def kang_image(event, file):
                                                                 "sticker.png")]), force_document=True)
             await conv.send_message(st_emoji)
             await conv.send_message("/done")
-    await event.edit("Sticker added! Your pack can be found [here](https://t.me/addstickers/{})".format(packshort), parse_mode='md')
+    await event.edit("Sticker added! Your pack can be found [here](https://t.me/addstickers/{})".format(packshort),
+                     parse_mode='md')
 
 
 async def kang_animated(event, file):
@@ -149,7 +154,8 @@ async def kang_animated(event, file):
                 return
             await conv.send_message(st_emoji)
             await conv.send_message("/done")
-        await event.edit("Sticker added! Your pack can be found [here](https://t.me/addstickers/{})".format(packshort), parse_mode='md')
+        await event.edit("Sticker added! Your pack can be found [here](https://t.me/addstickers/{})".format(packshort),
+                         parse_mode='md')
 
 
 @CommandHandler(command="kang", args=["emoji"], parse_mode='md')
@@ -186,21 +192,24 @@ async def get_pack_info(event):
         if not rep_msg.document:
             await event.edit('Reply to a sticker to get the pack details')
         else:
-            stickerset_attr = rep_msg.document.attributes[1]
+            stickerset_attr = rep_msg.document.attributes[1] if len(
+                rep_msg.document.attributes) > 1 else rep_msg.document.attributes[0]
             if not isinstance(stickerset_attr, DocumentAttributeSticker):
-                await event.edit('Reply to a sticker to get the pack details')
+                await event.edit(
+                    'The message you replied to doesn\'t have any sticker object or the respective sticker doesn\'t belong in a sticker-pack!')
             else:
-                get_stickerset = await event.client(GetStickerSetRequest(InputStickerSetID(id=stickerset_attr.stickerset.id,
-                                                                                     access_hash=stickerset_attr.stickerset.access_hash)))
+                get_stickerset = await event.client(
+                    GetStickerSetRequest(InputStickerSetID(id=stickerset_attr.stickerset.id,
+                                                           access_hash=stickerset_attr.stickerset.access_hash)))
                 pack_emojis = []
                 for document_sticker in get_stickerset.packs:
                     if document_sticker.emoticon not in pack_emojis:
                         pack_emojis.append(document_sticker.emoticon)
                 await event.edit(
-                        f"**Sticker Title:** `{get_stickerset.set.title}\n`" \
-                            f"**Sticker Short Name:** `{get_stickerset.set.short_name}`\n" \
-                            f"**Official:** `{get_stickerset.set.official}`\n" \
-                            f"**Archived:** `{get_stickerset.set.archived}`\n" \
-                            f"**Stickers In Pack:** `{len(get_stickerset.packs)}`\n" \
-                            f"**Emojis In Pack:** {' '.join(pack_emojis)}",
-                parse_mode='md')
+                    f"**Sticker Title:** `{get_stickerset.set.title}\n`"
+                    f"**Sticker Short Name:** `{get_stickerset.set.short_name}`\n"
+                    f"**Official:** `{get_stickerset.set.official}`\n"
+                    f"**Archived:** `{get_stickerset.set.archived}`\n"
+                    f"**Stickers In Pack:** `{len(get_stickerset.packs)}`\n"
+                    f"**Emojis In Pack:** {' '.join(pack_emojis)}",
+                    parse_mode='md')
