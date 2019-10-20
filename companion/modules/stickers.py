@@ -7,10 +7,11 @@ from telethon.errors.rpcerrorlist import (StickersetInvalidError,
 from telethon.tl.functions.account import UpdateNotifySettingsRequest
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import (DocumentAttributeFilename,
+                               DocumentAttributeSticker,
+                               InputStickerSetID,
                                InputMediaUploadedDocument,
                                InputPeerNotifySettings,
                                InputStickerSetShortName)
-
 from companion.utils import CommandHandler
 from companion.utils.helpers.messages import has_image, sticker_animated
 from companion.utils.helpers.tools import resize_image
@@ -170,3 +171,36 @@ async def kang_base(event):
         await kang_animated(event, file)
     else:
         await event.edit("Not a valid media entity!")
+
+
+@CommandHandler(command='packinfo')
+async def get_pack_info(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>Sticker's pack info!</i>
+    """
+    if not event.is_reply:
+        await event.edit('Reply to a sticker to get the pack details')
+    else:
+        rep_msg = await event.get_reply_message()
+        if not rep_msg.document:
+            await event.edit('Reply to a sticker to get the pack details')
+        else:
+            stickerset_attr = rep_msg.document.attributes[1]
+            if not isinstance(stickerset_attr, DocumentAttributeSticker):
+                await event.edit('Reply to a sticker to get the pack details')
+            else:
+                get_stickerset = await event.client(GetStickerSetRequest(InputStickerSetID(id=stickerset_attr.stickerset.id,
+                                                                                     access_hash=stickerset_attr.stickerset.access_hash)))
+                pack_emojis = []
+                for document_sticker in get_stickerset.packs:
+                    if document_sticker.emoticon not in pack_emojis:
+                        pack_emojis.append(document_sticker.emoticon)
+                await event.edit(
+                        f"**Sticker Title:** `{get_stickerset.set.title}\n`" \
+                            f"**Sticker Short Name:** `{get_stickerset.set.short_name}`\n" \
+                            f"**Official:** `{get_stickerset.set.official}`\n" \
+                            f"**Archived:** `{get_stickerset.set.archived}`\n" \
+                            f"**Stickers In Pack:** `{len(get_stickerset.packs)}`\n" \
+                            f"**Emojis In Pack:** {' '.join(pack_emojis)}",
+                parse_mode='md')
