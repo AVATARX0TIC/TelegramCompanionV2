@@ -1,4 +1,15 @@
+2.2.0:
+
+    - Remove the custom markdown formatter.
+    - Add support for kanging/copying animated stickers
+    - Fix the responses not parsing correctly
+    - Add `remind` and `remindme` commands to send reminders to yourself or chats
+    - Add some old commands like `upload`, `disconnect`, `logout`, `mute` and `packinfo`
+    - Other bug fixes
+
+
 2.1.2:
+
     - Add heroku support for the plugin manager. Read https://github.com/nitanmarcel/TelegramCompanionV2#plugins
     - Add `admin` command to get a chat's admins!
     - Add back the global notes module
