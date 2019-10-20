@@ -1,4 +1,5 @@
 import datetime
+from tzlocal import get_localzone
 import re
 from io import BytesIO
 from companion.utils import CommandHandler
@@ -13,6 +14,7 @@ async def remind(event):
     <b>return:</b> <i>Scheduled message at a specific time to chat</i>
     """
     str_time = event.args.date
+    tz = get_localzone()
     if not str_time:
         await event.reply('Invalid time!')
     else:
@@ -55,7 +57,7 @@ async def remind(event):
                 await event.client.send_message(await event.get_chat(), to_sched, schedule=datetime.datetime.timestamp(after))
             else:
                 await to_sched.forward_to(await event.get_chat(), schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message to this chat for {}!'.format(after.strftime('%c %z')))
+            await event.reply('Scheduled message to this chat for {}!'.format(tz.localize(after).strftime('%c %Z')))
 
 
 @CommandHandler(command='remindme', args=['date', 'message'])
@@ -66,6 +68,7 @@ async def remindme(event):
     <b>return:</b> <i>Scheduled message at a specific time to yourself</i>
     """
     str_time = event.args.date
+    tz = get_localzone()
     if not str_time:
         await event.reply('Invalid time!')
     else:
@@ -109,7 +112,7 @@ async def remindme(event):
                 await event.client.send_message('me', to_sched, schedule=datetime.datetime.timestamp(after))
             else:
                 await to_sched.forward_to('me', schedule=datetime.datetime.timestamp(after))
-            await event.reply('Scheduled message to myself for {}!'.format(after.strftime('%c %z')))
+            await event.reply('Scheduled message to myself for {}!'.format(tz.localize(after).strftime('%c %Z')))
 
 
 
@@ -121,11 +124,13 @@ async def get_reminders(event):
     """
     scheduled = await event.client(GetScheduledHistoryRequest(peer=await event.get_chat(), hash=0))
     sched_file = ''
+    tz = get_localzone()
     if not scheduled.messages:
         await event.edit('There are no reminders in this chat!')
     else:
         for message in scheduled.messages:
-            sched_file += '\n{}\n-------\n\n{}\n\n-------\n\n'.format(message.date.strftime('%c %Z'), message.message or 'MessageWIthNoText')
+            date = message.date.astimezone(tz)
+            sched_file += '\n{}\n-------\n\n{}\n\n-------\n\n'.format(date.strftime('%c %Z'), message.message or 'MessageWIthNoText')
         with BytesIO(str.encode(sched_file)) as output:
             output.name = 'scheduled.txt'
             await event.reply(file=output)
