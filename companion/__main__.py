@@ -50,11 +50,11 @@ async def help(event):
         if get_help_for in CMD_HELP:
             cmd_help = CMD_HELP.get(get_help_for)
             if cmd_help:
-                await client.reply("Here is the help for the `{}` command:\n".format(get_help_for) + cmd_help)
+                await event.reply("Here is the help for the `{}` command:\n".format(get_help_for) + cmd_help)
             else:
-                await client.reply("There's no help available for `{}`".format(get_help_for))
+                await event.reply("There's no help available for `{}`".format(get_help_for))
         else:
-            await client.reply("There's no `{}` command available".format(get_help_for))
+            await event.reply("There's no `{}` command available".format(get_help_for))
         return
 
     if not event.is_private:
