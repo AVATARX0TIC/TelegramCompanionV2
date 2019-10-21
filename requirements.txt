@@ -8,3 +8,4 @@ telethon-session-sqlalchemy
 sqlalchemy
 emoji
 pillow
+tzlocal
