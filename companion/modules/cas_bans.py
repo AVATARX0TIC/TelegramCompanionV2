@@ -48,7 +48,7 @@ async def combot(event):
                                     with BytesIO(str.encode(messages_file)) as output:
                                         output.name = 'spam_messages.txt'
 
-                                        await event.reply('**Potential spam thread!**'
+                                        await event.reply('**Potential spam threat!**'
                                                           f'\n**Banned**: `{date}`'
                                                           f'\n**Registered offenses**: {offenses}'
                                                           f'\n**Source**: [Combot CAS Bans](https://combot.org/cas/query?u={user.id})', file=output, parse_mode='md')

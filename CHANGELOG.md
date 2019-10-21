@@ -1,3 +1,11 @@
+2.2.1:
+
+    - Minor fixes for the remind commands.
+    - Add the `reminders` command to get all the redimners from a chat.
+    - Use local timezone for all of the reminders dates.
+    - Add CAS (Combot Anti-Spam) for users that joins a chat. It replies only if they are banned
+    - Other bug fixes
+    
 2.2.0:
 
     - Remove the custom markdown formatter.
