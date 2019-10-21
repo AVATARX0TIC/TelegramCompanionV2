@@ -46,6 +46,7 @@ The following config variables are supported:
 - DB_URI (**optional**) - The url of the postgresql database. If there's no url given the companion will create a session file to log in to telegram instead of saving the session in the postgresql database. Also future sql modules won't work!
 - SESSION_NAME (**optional**) - The name of the session to be used for the companion! Defaults to `companion`! After you logged in with this session name you can change the variable to switch between multiple accounts!
 - ANTI_SPAM (**optional**) - Set to anything to enable spam protection on private messages
+- CAS (**optional**) - Set to anything to enable CAS (Combot Bans) messages for banned users that joins a chat
 
 ## Features
 
