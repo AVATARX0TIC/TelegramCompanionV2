@@ -93,7 +93,7 @@ async def readall(event):
     """
     await event.edit("Marking all the unread messages as read.. Please wait...")
     async for dialog in event.client.iter_dialogs(limit=None):
-        await event.send_read_acknowledge(dialog, clear_mentions=True)
+        await event.client.send_read_acknowledge(dialog, clear_mentions=True)
     await event.edit("Yay. All the messages are marked as read")
 
 
