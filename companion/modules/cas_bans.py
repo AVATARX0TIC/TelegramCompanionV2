@@ -10,7 +10,7 @@ from tzlocal import get_localzone
 
 from companion import client
 
-CAS = os.environ.get('CAS_BANS', None)
+CAS = os.environ.get('CAS', None)
 
 @client.on(events.ChatAction())
 async def combot(event):
