@@ -31,8 +31,8 @@ async def user_info(event):
 
     try:
         full_user = await event.client(GetFullUserRequest(user_id_or_name))
-    except UserIdInvalidError:
-        await event.edit("I don't seem to find this user by" + user_id_or_name + "!")
+    except (UserIdInvalidError, ValueError):
+        await event.edit("I don't seem to find this user by: " + str(user_id_or_name) + "!")
         return
     except TypeError:
         await event.edit("<code>{}</code> it's not a valid user!".format(str(user_id_or_name)))
