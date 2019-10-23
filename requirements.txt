@@ -10,3 +10,5 @@ emoji
 pillow
 tzlocal
 Cython
+cython
+pyjnius
