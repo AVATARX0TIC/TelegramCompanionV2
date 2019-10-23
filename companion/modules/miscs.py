@@ -1,5 +1,7 @@
 from html import escape
 import re
+import aiohttp
+import json
 from telethon.errors import UserIdInvalidError
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import ChannelParticipantsAdmins
@@ -44,6 +46,22 @@ async def user_info(event):
     profile_photo = full_user.profile_photo
     about = full_user.about
     common_chats = full_user.common_chats_count
+    cas_banned = None
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://combot.org/api/cas/check?user_id=' + str(user_id)) as request:
+            if request.status == 200:
+                res = json.loads(await request.read())
+                user_banned = res.get('ok')
+                result = res.get('result')
+                if user_banned is True:
+                    cas_banned = '<a href=\"https://combot.org/cas/query?u={}\">Yes!</a>'.format(user_id)
+                elif user_banned is False:
+                    cas_banned = '<a href=\"https://combot.org/cas/query?u={}\">No!</a>'.format(user_id)
+                else:
+                    cas_banned = 'Not available!'
+            else:
+                cas_banned = 'Not available!'
+
 
     INFO = "<b>User Info:\n</b>"
 
@@ -57,6 +75,7 @@ async def user_info(event):
     INFO += "\nUserID: " + user_id
     INFO += "\nPermanent user link: <a href=\"tg://user?id={}\">link</a>".format(
         user_id)
+    INFO += "\nCAS Banned: " + cas_banned
 
     if about:
         INFO += "\nAbout User: " + escape(about)
