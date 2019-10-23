@@ -9,4 +9,4 @@ sqlalchemy
 emoji
 pillow
 tzlocal
-git://github.com/kivy/pyjnius
+jtypes.pyjnius
