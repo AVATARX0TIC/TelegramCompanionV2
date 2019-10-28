@@ -1,154 +1,136 @@
-import asyncio
-import configparser
-import importlib.util
-import logging
-import os
+import datetime
+from tzlocal import get_localzone
 import re
-import shutil
-import sys
-from argparse import ArgumentParser
-
-import aiohttp
-
-from companion.plugins import get_plugins
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO)
-
-LOGGER = logging.getLogger(__name__)
-
-parser = ArgumentParser()
-
-parser.add_argument(
-    "--install",
-    help="Install any given plugin. Usage: --install <pluginname> or <user/repo/plugin_name>.")
-
-parser.add_argument(
-    "--remove",
-    help="Remove any given plugin. Usage: --remove <pluginname>.")
-
-parser.add_argument(
-    "--plugins",
-    help="Disply the installed plugins", action="store_true")
-
-args = parser.parse_args()
-config = configparser.ConfigParser()
+from io import BytesIO
+from companion.utils import CommandHandler
+from telethon.tl.functions.messages import GetScheduledHistoryRequest
 
 
-async def download_plugins(user="nitanmarcel", repo="TgCompanionPlugins", plugin=None):
-    if plugin is None:
-        LOGGER.error("No plugin specified")
-        return
-
-    LOGGER.info(f"Downloading Plugin: {plugin}")
-
-    github = f"https://api.github.com/repos/{user}/{repo}/contents/{plugin}"
-    requirements = None
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"{github}/{plugin}.plugin") as request:
-
-            if request.status == 404:
-                LOGGER.error(
-                    f"Can't find the plugin file of {plugin} plugin")
-                return
-
-            result = await request.json()
-        async with session.get(result.get("download_url")) as plugfile:
-
-            text = await plugfile.text(encoding="utf8")
-
-            if not os.path.isdir(f"companion/plugins/{plugin}"):
-                os.makedirs(f"companion/plugins/{plugin}")
-
-            with open(f"companion/plugins/{plugin}/{plugin}.plugin", "w+") as file:
-                file.write(text)
-        config.read(
-            f"companion/plugins/{plugin}/{plugin}.plugin")
-
-        modules_to_load = config.get("CORE", "modules").split(",")
-        try:
-            requirements = config.get("CORE", "requirements").split(",")
-        except BaseException:
-            requirements = None
-        if requirements:
-            for module in requirements:
-                if not importlib.util.find_spec(module.replace(" ", "")):
-                    process = await asyncio.create_subprocess_shell(f"{sys.executable} -m pip install {module}", stdin=asyncio.subprocess.PIPE)
-                    await process.communicate()
-        for module in modules_to_load:
-
-            async with session.get(f"{github}/{module.strip()}.py") as request:
-
-                if request.status == 404:
-                    LOGGER.error(f"Can't find the py file of {plugin} plugin")
-                    return
-                result = await request.json()
-
-            async with session.get(result.get("download_url")) as pyfile:
-
-                text = await pyfile.text(encoding="utf8")
-                LOGGER.info(f"Writing {module}.py")
-                with open(f"companion/plugins/{plugin}/{module.strip()}.py", "w+") as file:
-                    file.write(text)
-        LOGGER.info(f"Installed {plugin}")
-
-
-def remove_plugin(plugin_name):
-    path = f"companion/plugins/{plugin_name}"
-    if os.path.isdir(path):
-        shutil.rmtree(path, ignore_errors=True)
-        LOGGER.info(f"Plugin {plugin_name} removed")
+@CommandHandler(command='remind', args=['date', 'message'])
+async def remind(event):
+    """
+    <b>param:</b> <code>the date to which the message will be scheduled in format [x]d[x]h[x]m[x]s</code>
+    <b>param:</b> <code>the message will be scheduled. Ignore if it's reply</code>
+    <b>return:</b> <i>Scheduled message at a specific time to chat</i>
+    """
+    str_time = event.args.date
+    tz = get_localzone()
+    if not str_time:
+        await event.reply('Invalid time!')
     else:
-        LOGGER.info("Can't find the specified plugin.")
-
-
-def list_plugins():
-    PLUGINS = sorted(get_plugins())
-    OUTPUT = ""
-    for plugin in PLUGINS:
-        installed = plugin.split(".")[0]
-        OUTPUT += f"\n{installed}"
-    return OUTPUT
-
-
-def load_plugin_info(pluginname):
-
-    PLUGINS = sorted(get_plugins())
-    plugin_dct = {}
-    plugin_path = "companion/plugins/{}/{}"
-    for plugin in PLUGINS:
-        name, module = plugin.split(".")
-        if name == pluginname:
-            config.read(plugin_path.format(name, name) + ".plugin")
-            for section in config.sections():
-                for option in config.options(section):
-                    plugin_dct[option] = config.get(section, option)
-    print(plugin_dct)
-    return plugin_dct
-
-
-if __name__ == "__main__":
-    if args.install:
-        loop = asyncio.get_event_loop()
-
-        to_match = re.match(
-            r"([^\/]+)\/([^\/]+)(\/([^\/]+)(\/(.*))?)?",
-            args.install)
-        if to_match:
-            loop.run_until_complete(
-                download_plugins(
-                    user=to_match.group(1),
-                    repo=to_match.group(2),
-                    plugin=to_match.group(4)))
+        pattern = r'\d*d|\d*h|\d*m|\d*s'
+        findall = re.findall(pattern, str_time)
+        days = 0
+        hours = 0
+        minutes = 0
+        seconds = 0
+        if not findall:
+            await event.reply('Invalid time!')
         else:
-            loop.run_until_complete(
-                download_plugins(
-                    plugin=args.install))
-    elif args.remove:
-        remove_plugin(args.remove)
-    elif args.plugins:
-        list_plugins()
+            for match in findall:
+
+                if match.endswith('d'):
+                    days = match[:-1]
+                if match.endswith('h'):
+                    hours = match[:-1]
+                if match.endswith('m'):
+                    minutes = match[:-1]
+                if match.endswith('s'):
+                    seconds = match[:-1]
+
+            now = datetime.datetime.now()
+            after = now + datetime.timedelta(days=int(days),
+                                             hours=int(hours),
+                                             minutes=int(minutes),
+                                             seconds=int(seconds))
+
+            message = event.args.message
+            if not event.is_reply:
+                if message:
+                    to_sched = message
+                else:
+                    await event.reply('Missing message to schedule!')
+                    return
+            else:
+                to_sched = await event.get_reply_message()
+            if isinstance(to_sched, str):
+                await event.client.send_message(await event.get_chat(), to_sched, schedule=datetime.datetime.timestamp(after))
+            else:
+                await to_sched.forward_to(await event.get_chat(), schedule=datetime.datetime.timestamp(after))
+            await event.reply('Scheduled message to this chat for {}!'.format(tz.localize(after).strftime('%c %Z')))
+
+
+@CommandHandler(command='remindme', args=['date', 'message'])
+async def remindme(event):
+    """
+    <b>param:</b> <code>the date to which the message will be scheduled in format [x]d[x]h[x]m[x]s</code>
+    <b>param:</b> <code>the message will be scheduled. Ignore if it's reply</code>
+    <b>return:</b> <i>Scheduled message at a specific time to yourself</i>
+    """
+    str_time = event.args.date
+    tz = get_localzone()
+    if not str_time:
+        await event.reply('Invalid time!')
     else:
-        parser.print_help(sys.stderr)
+        pattern = r'\d*d|\d*h|\d*m|\d*s'
+        findall = re.findall(pattern, str_time)
+        days = 0
+        hours = 0
+        minutes = 0
+        seconds = 0
+        if not findall:
+            await event.reply('Invalid time!')
+        else:
+            for match in findall:
+
+                if match.endswith('d'):
+                    days = match[:-1]
+                if match.endswith('h'):
+                    hours = match[:-1]
+                if match.endswith('m'):
+                    minutes = match[:-1]
+                if match.endswith('s'):
+                    seconds = match[:-1]
+
+            now = datetime.datetime.now()
+            after = now + datetime.timedelta(days=int(days),
+                                             hours=int(hours),
+                                             minutes=int(minutes),
+                                             seconds=int(seconds))
+
+            message = event.args.message
+            if not event.is_reply:
+                if message:
+                    to_sched = message
+                else:
+                    await event.reply('Missing message to schedule!')
+                    return
+            else:
+                to_sched = await event.get_reply_message()
+
+            if isinstance(to_sched, str):
+                await event.client.send_message('me', to_sched, schedule=datetime.datetime.timestamp(after))
+            else:
+                await to_sched.forward_to('me', schedule=datetime.datetime.timestamp(after))
+            await event.reply('Scheduled message to myself for {}!'.format(tz.localize(after).strftime('%c %Z')))
+
+
+
+@CommandHandler(command='reminders')
+async def get_reminders(event):
+    """
+    <b>param:</b> <code>None</code>
+    <b>return:</b> <i>get all reminders from a chat in UTC timezone.</i>
+    """
+    scheduled = await event.client(GetScheduledHistoryRequest(peer=await event.get_chat(), hash=0))
+    sched_file = ''
+    tz = get_localzone()
+    if not scheduled.messages:
+        await event.edit('There are no reminders in this chat!')
+    else:
+        for message in scheduled.messages:
+            date = message.date.astimezone(tz)
+            sched_file += '\n{}\n-------\n\n{}\n\n-------\n\n'.format(date.strftime('%c %Z'), message.message or 'MessageWIthNoText')
+        with BytesIO(str.encode(sched_file)) as output:
+            output.name = 'scheduled.txt'
+            await event.reply(file=output)
